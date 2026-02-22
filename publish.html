@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish a Ride - RIDEX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        :root {
+            --bg-dark: #0a0a0c;
+            --card-bg: #151518;
+            --brand-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            --hover-bg: rgba(255, 255, 255, 0.05);
+            --accent: #8b5cf6;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+
+        .glass-nav {
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .publish-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 18px;
+            padding: 1rem 1.25rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .input-box:focus-within {
+            background: rgba(139, 92, 246, 0.03);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+        }
+
+        input, select, textarea {
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+            font-size: 1rem;
+            appearance: none;
+        }
+
+        select option {
+            background-color: #1a1a1f;
+            color: white;
+            padding: 12px;
+        }
+
+        .suggestions-list {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            background: #1a1a1f;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+            z-index: 100;
+            display: none;
+            backdrop-filter: blur(20px);
+        }
+
+        .suggestion-item {
+            padding: 14px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .suggestion-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            padding-left: 25px;
+        }
+
+        .suggestion-item i {
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+
+        .btn-publish {
+            background: var(--brand-gradient);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-publish:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .step-indicator {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .active-step {
+            background: var(--brand-gradient);
+            border: none;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+            opacity: 0.5;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+        
+        .select-wrapper::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.7rem;
+            color: #6b7280;
+            pointer-events: none;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-container:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .checkbox-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .checkmark {
+            height: 24px;
+            width: 24px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .checkbox-container:hover .checkmark {
+            border-color: var(--accent);
+        }
+
+        .checkbox-container input:checked ~ .checkmark {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .checkmark:after {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: white;
+            font-size: 12px;
+            display: none;
+        }
+
+        .checkbox-container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* --- MODAL STYLES --- */
+        #payment-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #151518;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            max-width: 450px;
+            width: 100%;
+            padding: 2.5rem;
+            position: relative;
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <nav class="glass-nav fixed top-0 w-full z-50 px-6 py-4 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2 no-underline">
+            <div class="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center font-bold text-white">R</div>
+            <span class="text-xl font-bold tracking-tight text-white">RIDEX</span>
+        </a>
+        <div class="flex items-center gap-4">
+            <a href="profile.html" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-user-circle text-2xl"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-20 px-6 max-w-3xl mx-auto">
+        <div class="mb-10 text-center">
+            <h1 class="text-4xl font-extrabold mb-3">Publish a Journey</h1>
+            <p class="text-gray-500">Share your ride or deliver a package across India.</p>
+        </div>
+
+        <div class="publish-card">
+            <form id="publishForm" class="space-y-8">
+                
+                <!-- Step 1: Route -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="step-indicator active-step">1</div>
+                        <h2 class="text-lg font-semibold">Route Details</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="input-box">
+                            <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">From</label>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-location-dot text-xs text-gray-600"></i>
+                                <input type="text" id="from-input" placeholder="Origin City" autocomplete="off" required>
+                            </div>
+                            <div id="from-suggestions" class="suggestions-list"></div>
+                        </div>
+                        <div class="input-box">
+                            <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">To</label>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-flag-checkered text-xs text-gray-600"></i>
+                                <input type="text" id="to-input" placeholder="Destination City" autocomplete="off" required>
+                            </div>
+                            <div id="to-suggestions" class="suggestions-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Schedule -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="step-indicator active-step">2</div>
+                        <h2 class="text-lg font-semibold">Schedule</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="input-box">
+                            <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Date</label>
+                            <input type="date" required>
+                        </div>
+                        <div class="input-box">
+                            <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Time</label>
+                            <input type="time" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Mode & Pricing -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="step-indicator active-step">3</div>
+                        <h2 class="text-lg font-semibold">Mode & Pricing</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="input-box">
+                            <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Service Type</label>
+                            <div class="select-wrapper">
+                                <select id="service-type" required>
+                                    <option value="car">Car (Passenger)</option>
+                                    <option value="bike">Bike (Passenger)</option>
+                                    <option value="courier">Courier (Delivery Only)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-box">
+                            <label id="quantity-label" class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Seats Available</label>
+                            <div id="quantity-input-container">
+                                <input type="number" id="seats-input" min="1" max="6" value="1">
+                            </div>
+                            <div id="courier-size-container" class="hidden select-wrapper">
+                                <select id="courier-size">
+                                    <option value="small">Small (Envelope/Keys)</option>
+                                    <option value="medium">Medium (Box/Bag)</option>
+                                    <option value="large">Large (Multiple Boxes)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-box">
+                            <label id="price-label" class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Price per Seat (₹)</label>
+                            <input type="number" id="primary-price" placeholder="Amount" required>
+                        </div>
+                    </div>
+
+                    <!-- Dual Mode Toggle -->
+                    <div id="dual-mode-wrapper" class="mt-6">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="include-courier">
+                            <span class="checkmark"></span>
+                            <div>
+                                <span class="block font-bold text-sm text-gray-200">Include delivery of courier</span>
+                                <span class="block text-xs text-gray-500">I have extra space for small/medium packages</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Additional Price for Courier -->
+                    <div id="courier-price-box" class="input-box mt-4 hidden border-violet-500/30">
+                        <label class="text-[10px] uppercase font-bold text-violet-400 block mb-1">Courier Delivery Fee (₹)</label>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-box text-violet-400 text-xs"></i>
+                            <input type="number" id="courier-price" placeholder="Fee for carrying packages">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-publish w-full py-5 rounded-2xl font-extrabold text-white uppercase tracking-widest mt-8">
+                    Confirm & Publish Journey
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Security Deposit Modal -->
+    <div id="payment-modal">
+        <div class="modal-content">
+            <div class="w-16 h-16 bg-violet-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-shield-halved text-2xl text-violet-500"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-center mb-4">Security Verification</h2>
+            <div class="space-y-4 text-sm text-gray-400 leading-relaxed mb-8">
+                <p>To ensure reliability, we require a <span class="text-white font-bold">10% security deposit</span> of your total ride value.</p>
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5 flex justify-between items-center">
+                    <span>Deposit Amount:</span>
+                    <span class="text-xl font-bold text-white">₹<span id="deposit-amount">0</span></span>
+                </div>
+                <ul class="space-y-2">
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-1"></i>
+                        <span>Refunded if the ride is successful or if no one books.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-circle-xmark text-rose-500 mt-1"></i>
+                        <span>Forfeited if you cancel the ride after a customer books.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="flex flex-col gap-3">
+                <button id="proceed-payment" class="btn-publish w-full py-4 rounded-xl font-bold text-white transition-all">
+                    Proceed to Pay 10%
+                </button>
+                <button onclick="closeModal()" class="w-full py-3 rounded-xl text-gray-500 hover:text-white transition-colors text-sm">
+                    Cancel Publication
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const indianCities = [
+            "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Ahmedabad", "Chennai", "Kolkata", 
+            "Surat", "Pune", "Jaipur", "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", 
+            "Bhopal", "Visakhapatnam", "Patna", "Vadodara", "Ghaziabad", "Ludhiana", "Agra", "Nashik"
+        ];
+
+        const serviceType = document.getElementById('service-type');
+        const quantityLabel = document.getElementById('quantity-label');
+        const priceLabel = document.getElementById('price-label');
+        const seatsInputContainer = document.getElementById('quantity-input-container');
+        const courierInput = document.getElementById('courier-size-container');
+        const includeCourierCheckbox = document.getElementById('include-courier');
+        const courierPriceBox = document.getElementById('courier-price-box');
+        const dualModeWrapper = document.getElementById('dual-mode-wrapper');
+        
+        const primaryPriceInput = document.getElementById('primary-price');
+        const seatsInput = document.getElementById('seats-input');
+        const courierPriceInput = document.getElementById('courier-price');
+        
+        const modal = document.getElementById('payment-modal');
+        const depositSpan = document.getElementById('deposit-amount');
+        const proceedBtn = document.getElementById('proceed-payment');
+
+        serviceType.addEventListener('change', () => {
+            if (serviceType.value === 'courier') {
+                quantityLabel.textContent = 'Package Size Limit';
+                priceLabel.textContent = 'Delivery Fee (₹)';
+                seatsInputContainer.classList.add('hidden');
+                courierInput.classList.remove('hidden');
+                dualModeWrapper.classList.add('hidden');
+                courierPriceBox.classList.add('hidden');
+                includeCourierCheckbox.checked = false;
+            } else {
+                quantityLabel.textContent = 'Seats Available';
+                priceLabel.textContent = 'Price per Seat (₹)';
+                seatsInputContainer.classList.remove('hidden');
+                courierInput.classList.add('hidden');
+                dualModeWrapper.classList.remove('hidden');
+            }
+        });
+
+        includeCourierCheckbox.addEventListener('change', () => {
+            if (includeCourierCheckbox.checked) {
+                courierPriceBox.classList.remove('hidden');
+            } else {
+                courierPriceBox.classList.add('hidden');
+            }
+        });
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        document.getElementById('publishForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Calculate 10% Security Deposit
+            const basePrice = parseFloat(primaryPriceInput.value) || 0;
+            const seats = parseInt(seatsInput.value) || 1;
+            const courierFee = (includeCourierCheckbox.checked) ? (parseFloat(courierPriceInput.value) || 0) : 0;
+            
+            let totalRideValue = 0;
+            if (serviceType.value === 'courier') {
+                totalRideValue = basePrice;
+            } else {
+                totalRideValue = (basePrice * seats) + courierFee;
+            }
+
+            const deposit = (totalRideValue * 0.1).toFixed(2);
+            depositSpan.textContent = deposit;
+            
+            // Show Security Modal
+            modal.style.display = 'flex';
+        });
+
+        proceedBtn.addEventListener('click', () => {
+            proceedBtn.disabled = true;
+            proceedBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Processing Payment...`;
+            
+            setTimeout(() => {
+                proceedBtn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Payment Successful!`;
+                proceedBtn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    window.location.href = 'book.html';
+                }, 1500);
+            }, 2000);
+        });
+
+        function setupSuggestions(inputId, listId) {
+            const input = document.getElementById(inputId);
+            const list = document.getElementById(listId);
+
+            input.addEventListener('input', () => {
+                const val = input.value.toLowerCase();
+                list.innerHTML = '';
+                if (!val) { list.style.display = 'none'; return; }
+
+                const filtered = indianCities.filter(city => city.toLowerCase().startsWith(val)).slice(0, 5);
+                if (filtered.length > 0) {
+                    filtered.forEach(city => {
+                        const item = document.createElement('div');
+                        item.className = 'suggestion-item';
+                        item.innerHTML = `<i class="fa-solid fa-map-pin"></i> ${city}`;
+                        item.onclick = () => {
+                            input.value = city;
+                            list.style.display = 'none';
+                        };
+                        list.appendChild(item);
+                    });
+                    list.style.display = 'block';
+                } else {
+                    list.style.display = 'none';
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!input.contains(e.target) && !list.contains(e.target)) list.style.display = 'none';
+            });
+        }
+
+        setupSuggestions('from-input', 'from-suggestions');
+        setupSuggestions('to-input', 'to-suggestions');
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase-config.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>

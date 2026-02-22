@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Register - RIDEX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        :root {
+            --bg-dark: #0a0a0c;
+            --card-bg: #151518;
+            --brand-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            --accent: #8b5cf6;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .tab-switcher {
+            display: flex;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 4px;
+            border-radius: 14px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 1;
+            transition: color 0.3s;
+            color: #6b7280;
+        }
+
+        .tab-btn.active {
+            color: white;
+        }
+
+        .tab-slider {
+            position: absolute;
+            height: calc(100% - 8px);
+            width: calc(50% - 4px);
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 18px;
+            padding: 0.8rem 1.25rem;
+            transition: all 0.3s ease;
+            margin-bottom: 1.25rem;
+        }
+
+        .input-box:focus-within {
+            background: rgba(139, 92, 246, 0.03);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
+        }
+
+        input {
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .btn-auth {
+            background: var(--brand-gradient);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .form-container {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left mr-2"></i> Back to home</a>
+
+    <div class="auth-card">
+        <div class="text-center mb-8">
+            <div class="w-12 h-12 bg-violet-600 rounded-2xl flex items-center justify-center font-bold text-white mx-auto mb-4 text-2xl">R</div>
+            <h1 class="text-2xl font-extrabold tracking-tight">Welcome to RIDEX</h1>
+            <p class="text-gray-500 text-sm mt-1">Join the community of explorers</p>
+        </div>
+
+        <div class="tab-switcher">
+            <div id="slider" class="tab-slider"></div>
+            <div class="tab-btn active" onclick="switchTab('login')">Login</div>
+            <div class="tab-btn" onclick="switchTab('register')">Register</div>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="form-container active">
+            <div class="input-box">
+                <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Email Address</label>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-envelope text-xs text-gray-600"></i>
+                    <input type="email" placeholder="name@example.com" required>
+                </div>
+            </div>
+            <div class="input-box">
+                <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Password</label>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-lock text-xs text-gray-600"></i>
+                    <input type="password" placeholder="••••••••" required>
+                </div>
+            </div>
+            <div class="text-right mb-6">
+                <a href="#" class="text-xs text-violet-400 hover:text-violet-300">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn-auth w-full py-4 rounded-2xl font-bold text-white uppercase tracking-widest text-sm">
+                Sign In
+            </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="form-container">
+            <div class="input-box">
+                <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Full Name</label>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-user text-xs text-gray-600"></i>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+            </div>
+            <div class="input-box">
+                <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Email Address</label>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-envelope text-xs text-gray-600"></i>
+                    <input type="email" placeholder="name@example.com" required>
+                </div>
+            </div>
+            <div class="input-box">
+                <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Create Password</label>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-lock text-xs text-gray-600"></i>
+                    <input type="password" placeholder="••••••••" required>
+                </div>
+            </div>
+            <div class="mb-6 flex items-center gap-2">
+                <input type="checkbox" class="w-4 h-4 accent-violet-500" id="terms" required>
+                <label for="terms" class="text-xs text-gray-500">I agree to the Terms & Privacy Policy</label>
+            </div>
+            <button type="submit" class="btn-auth w-full py-4 rounded-2xl font-bold text-white uppercase tracking-widest text-sm">
+                Create Account
+            </button>
+        </form>
+
+        <div class="mt-8 pt-6 border-t border-white/5 flex justify-center gap-4">
+            <button class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                <i class="fa-brands fa-google text-sm"></i>
+            </button>
+            <button class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                <i class="fa-brands fa-apple text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const slider = document.getElementById('slider');
+            const btns = document.querySelectorAll('.tab-btn');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            if (tab === 'login') {
+                slider.style.transform = 'translateX(0%)';
+                btns[0].classList.add('active');
+                btns[1].classList.remove('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+            } else {
+                slider.style.transform = 'translateX(100%)';
+                btns[1].classList.add('active');
+                btns[0].classList.remove('active');
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+        }
+
+        // Redirect simulation
+        document.getElementById('loginForm').onsubmit = (e) => {
+            e.preventDefault();
+            window.location.href = 'profile.html';
+        };
+        document.getElementById('registerForm').onsubmit = (e) => {
+            e.preventDefault();
+            window.location.href = 'profile.html';
+        };
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase-config.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>

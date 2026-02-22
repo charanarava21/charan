@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - RIDEX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        :root {
+            --bg-dark: #0a0a0c;
+            --card-bg: #151518;
+            --brand-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+
+        .glass-nav {
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .profile-header {
+            background: linear-gradient(to bottom, rgba(139, 92, 246, 0.15), var(--bg-dark));
+            padding-top: 120px;
+            padding-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .avatar-glow {
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+            border: 4px solid var(--bg-dark);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav fixed top-0 w-full z-50 px-6 py-4 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center font-bold">R</div>
+            <span class="text-xl font-bold">RIDEX</span>
+        </a>
+        <div class="flex items-center gap-6 text-sm text-gray-400">
+            <a href="index.html" class="hover:text-white">Home</a>
+            <a href="book.html" class="hover:text-white">Find Rides</a>
+            <button class="text-rose-400 hover:text-rose-300 font-semibold" onclick="location.href='auth.html'">Logout</button>
+        </div>
+    </nav>
+
+    <header class="profile-header px-6">
+        <div class="max-w-4xl mx-auto flex flex-col items-center">
+            <div class="relative mb-6">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar" class="w-32 h-32 rounded-full avatar-glow">
+                <button class="absolute bottom-0 right-0 w-10 h-10 bg-violet-600 rounded-full flex items-center justify-center border-4 border-black">
+                    <i class="fa-solid fa-camera text-xs"></i>
+                </button>
+            </div>
+            <h1 class="text-3xl font-extrabold mb-1">John Doe</h1>
+            <p class="text-gray-500 flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-violet-500"></i> Mumbai, India
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 pb-20 -mt-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="stat-card">
+                <div class="text-2xl font-bold text-violet-400">12</div>
+                <div class="text-[10px] uppercase text-gray-500 font-bold tracking-widest">Rides Given</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-2xl font-bold text-pink-400">5</div>
+                <div class="text-[10px] uppercase text-gray-500 font-bold tracking-widest">Rides Taken</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-2xl font-bold text-emerald-400">4.9</div>
+                <div class="text-[10px] uppercase text-gray-500 font-bold tracking-widest">Rating</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-2xl font-bold text-amber-400">3</div>
+                <div class="text-[10px] uppercase text-gray-500 font-bold tracking-widest">Couriers</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Details -->
+            <div>
+                <h3 class="text-lg font-bold mb-4">Personal Info</h3>
+                <div class="info-item">
+                    <i class="fa-solid fa-envelope w-5 text-gray-600"></i>
+                    <div>
+                        <div class="text-[10px] text-gray-500 uppercase font-bold">Email</div>
+                        <div class="text-sm">john.doe@example.com</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-phone w-5 text-gray-600"></i>
+                    <div>
+                        <div class="text-[10px] text-gray-500 uppercase font-bold">Phone</div>
+                        <div class="text-sm">+91 98765 43210</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-shield-check w-5 text-emerald-500"></i>
+                    <div>
+                        <div class="text-[10px] text-gray-500 uppercase font-bold">Verification</div>
+                        <div class="text-sm text-emerald-500 font-semibold">Verified Profile</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle -->
+            <div>
+                <h3 class="text-lg font-bold mb-4">My Vehicle</h3>
+                <div class="info-item">
+                    <i class="fa-solid fa-car w-5 text-gray-600"></i>
+                    <div>
+                        <div class="text-[10px] text-gray-500 uppercase font-bold">Car Model</div>
+                        <div class="text-sm">Tesla Model 3 (White)</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-hashtag w-5 text-gray-600"></i>
+                    <div>
+                        <div class="text-[10px] text-gray-500 uppercase font-bold">License Plate</div>
+                        <div class="text-sm">MH 01 AB 1234</div>
+                    </div>
+                </div>
+                <button class="w-full mt-2 py-3 border border-white/5 rounded-16 hover:bg-white/5 transition-colors text-xs font-bold uppercase tracking-wider text-gray-400">
+                    Edit Vehicle Details
+                </button>
+            </div>
+        </div>
+    </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase-config.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
